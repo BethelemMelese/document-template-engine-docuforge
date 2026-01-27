@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { TemplateEditor } from '../components/TemplateEditor/TemplateEditor';
 import { VariablePanel } from '../components/TemplateEditor/VariablePanel';
 import { Button } from '../components/common/Button';
+import { Sidebar } from '../components/common/Sidebar';
 import { getTemplate, saveTemplate } from '../storage/localStorage';
 import { Template } from '../types';
 import { extractVariables } from '../utils/templateParser';
@@ -129,71 +130,79 @@ export function TemplateEditorScreen() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Top Bar */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold text-gray-900">LetterForge</h1>
-              {saved && (
-                <span className="text-sm text-green-600 flex items-center gap-1">
+    <div className="min-h-screen bg-gray-50 flex">
+      {/* Sidebar */}
+      <Sidebar />
+
+      {/* Main Content */}
+      <div className="flex-1 ml-64">
+        {/* Top Bar */}
+        <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
+          <div className="px-8 py-4">
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <div className="text-sm text-gray-500">
+                Dashboard / Templates / {id ? 'Edit Template' : 'New Template'}
+              </div>
+              <div className="flex gap-2 flex-wrap">
+                <Button variant="outline" onClick={() => navigate('/')} size="sm">
+                  ← Dashboard
+                </Button>
+                <Button 
+                  variant="secondary" 
+                  onClick={handleSave}
+                  disabled={saving}
+                  size="sm"
+                >
+                  {saving ? 'Saving...' : 'Save Template'}
+                </Button>
+                <Button onClick={handleNext} disabled={saving} size="sm">
+                  Next → Generate
+                </Button>
+              </div>
+            </div>
+            {error && (
+              <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-sm text-red-800">{error}</p>
+              </div>
+            )}
+            {saved && (
+              <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                <p className="text-sm text-green-800 flex items-center gap-2">
                   <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
-                  Saved
-                </span>
-              )}
-            </div>
-            <div className="flex gap-2 flex-wrap">
-              <Button variant="outline" onClick={() => navigate('/')}>
-                ← Dashboard
-              </Button>
-              <Button 
-                variant="secondary" 
-                onClick={handleSave}
-                disabled={saving}
-              >
-                {saving ? 'Saving...' : 'Save Template'}
-              </Button>
-              <Button onClick={handleNext} disabled={saving}>
-                Next → Generate
-              </Button>
-            </div>
+                  Template saved successfully!
+                </p>
+              </div>
+            )}
           </div>
-          {error && (
-            <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-sm text-red-800">{error}</p>
-            </div>
-          )}
         </div>
-      </div>
 
-      {/* Main Content - 2 Column Layout */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-6">
-          <input
-            type="text"
-            value={template.name}
-            onChange={(e) => setTemplate(prev => ({ ...prev, name: e.target.value }))}
-            className="text-2xl font-semibold text-gray-900 bg-transparent border-none focus:outline-none focus:ring-0 p-0 w-full"
-            placeholder="Template Name"
-          />
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left: Rich Text Editor */}
-          <div className="lg:col-span-2">
-            <TemplateEditor
-              content={template.content}
-              onContentChange={handleContentChange}
-              onVariablesDetected={handleVariablesDetected}
-              onSave={handleSave}
+        {/* Main Content - 2 Column Layout */}
+        <div className="p-8">
+          <div className="mb-6">
+            <input
+              type="text"
+              value={template.name}
+              onChange={(e) => setTemplate(prev => ({ ...prev, name: e.target.value }))}
+              className="text-3xl font-bold text-gray-900 bg-transparent border-none focus:outline-none focus:ring-0 p-0 w-full"
+              placeholder="Template Name"
             />
           </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Left: Rich Text Editor */}
+            <div className="lg:col-span-2">
+              <TemplateEditor
+                content={template.content}
+                onContentChange={handleContentChange}
+                onVariablesDetected={handleVariablesDetected}
+              />
+            </div>
 
-          {/* Right: Variable Panel */}
-          <div className="lg:col-span-1">
-            <VariablePanel variables={variables} />
+            {/* Right: Variable Panel */}
+            <div className="lg:col-span-1">
+              <VariablePanel variables={variables} />
+            </div>
           </div>
         </div>
       </div>

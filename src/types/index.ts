@@ -1,7 +1,12 @@
+export type TemplateCategory = 'TECH' | 'MARKETING' | 'BUSINESS' | 'DESIGN' | 'OTHER';
+
 export interface Template {
   id: string;
   name: string;
   content: string;
+  category?: TemplateCategory;
+  icon?: string; // Icon identifier for the template
+  views?: number; // View count
   createdAt: string;
   updatedAt: string;
 }

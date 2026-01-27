@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { EmailApply } from '../components/EmailApply/EmailApply';
+import { Sidebar } from '../components/common/Sidebar';
 import { Button } from '../components/common/Button';
 
 export function EmailApplyScreen() {
@@ -40,42 +41,47 @@ export function EmailApplyScreen() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Top Bar */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">LetterForge</h1>
-              <p className="text-sm text-gray-500 mt-1">Email Application</p>
-            </div>
-            <div className="flex gap-2">
-              <Button variant="outline" onClick={() => navigate(-1)}>
-                ← Back
-              </Button>
-              <Button variant="outline" onClick={() => navigate('/')}>
-                Dashboard
-              </Button>
+    <div className="min-h-screen bg-gray-50 flex">
+      {/* Sidebar */}
+      <Sidebar />
+
+      {/* Main Content */}
+      <div className="flex-1 ml-64">
+        {/* Top Bar */}
+        <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
+          <div className="px-8 py-4">
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <div className="text-sm text-gray-500">
+                Dashboard / Templates / Email Application
+              </div>
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={() => navigate(-1)} size="sm">
+                  ← Back
+                </Button>
+                <Button variant="outline" onClick={() => navigate('/')} size="sm">
+                  Dashboard
+                </Button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-6">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-2">Send Your Application</h2>
-          <p className="text-gray-600">
-            Choose your preferred email client to send your cover letter.
-          </p>
+        {/* Main Content */}
+        <div className="p-8">
+          <div className="mb-6">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-2">Send Your Application</h2>
+            <p className="text-gray-600">
+              Choose your preferred email client to send your cover letter.
+            </p>
+          </div>
+          <EmailApply
+            company={company}
+            position={position}
+            email={emailValue}
+            content={content}
+            onEmailChange={setEmailValue}
+          />
         </div>
-        <EmailApply
-          company={company}
-          position={position}
-          email={emailValue}
-          content={content}
-          onEmailChange={setEmailValue}
-        />
       </div>
     </div>
   );

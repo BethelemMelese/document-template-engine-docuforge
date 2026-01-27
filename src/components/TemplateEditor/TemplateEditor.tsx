@@ -17,7 +17,6 @@ export function TemplateEditor({
   content,
   onContentChange,
   onVariablesDetected,
-  onSave,
 }: TemplateEditorProps) {
   const editor = useEditor({
     extensions: [
@@ -29,7 +28,6 @@ export function TemplateEditor({
     ],
     content,
     onUpdate: ({ editor }) => {
-      const html = editor.getHTML();
       const text = editor.getText();
       onContentChange(text);
       
