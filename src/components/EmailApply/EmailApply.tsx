@@ -50,40 +50,40 @@ export function EmailApply({ company, position, email, content, onEmailChange }:
 
   return (
     <div className="max-w-2xl mx-auto">
-      <Card>
+      <Card className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
         <div className="mb-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Email Application</h2>
-          <p className="text-sm text-gray-500">Review and send your cover letter via email</p>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">Email Application</h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400">Review and send your cover letter via email</p>
         </div>
-        
+
         <div className="space-y-4 mb-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              To: <span className="text-gray-400">(Hiring Manager Email)</span>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              To: <span className="text-gray-400 dark:text-gray-500">(Hiring Manager Email)</span>
             </label>
             <input
               type="email"
               value={currentEmail}
               onChange={(e) => handleEmailChange(e.target.value)}
               placeholder="hr@company.com"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary focus:border-primary"
             />
           </div>
-          
+
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Subject:</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Subject:</label>
             <input
               type="text"
               value={subject}
               readOnly
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-700"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300"
             />
           </div>
-          
+
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Body:</label>
-            <div className="border border-gray-300 rounded-lg p-4 bg-gray-50 max-h-96 overflow-y-auto">
-              <pre className="whitespace-pre-wrap text-sm text-gray-800 font-sans leading-relaxed">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Body:</label>
+            <div className="border border-gray-300 dark:border-gray-600 rounded-lg p-4 bg-gray-50 dark:bg-gray-800 max-h-96 overflow-y-auto">
+              <pre className="whitespace-pre-wrap text-sm text-gray-800 dark:text-gray-200 font-sans leading-relaxed">
                 {content}
               </pre>
             </div>

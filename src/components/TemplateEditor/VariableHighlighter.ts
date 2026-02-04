@@ -12,9 +12,11 @@ export const VariableMark = Mark.create({
           if (!attributes.variableName) {
             return {};
           }
+          // Alternate colors for variables
+          const colorClass = attributes.variableName.charCodeAt(0) % 2 === 0 ? 'variable-mark' : 'variable-mark purple';
           return {
             'data-variable': attributes.variableName,
-            class: 'variable-mark',
+            class: colorClass,
           };
         },
       },

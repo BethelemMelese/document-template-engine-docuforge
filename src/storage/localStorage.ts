@@ -1,7 +1,14 @@
 import { Template, Application } from '../types';
+import type { VariableType } from '../types';
 
 const TEMPLATES_KEY = 'letterforge_templates';
 const APPLICATIONS_KEY = 'letterforge_applications';
+const GLOBAL_VARIABLES_KEY = 'letterforge_global_variables';
+
+export interface GlobalVariable {
+  name: string;
+  type: VariableType;
+}
 
 export function saveTemplate(template: Template): void {
   const templates = getTemplates();
@@ -41,4 +48,13 @@ export function saveApplication(application: Application): void {
 export function getApplications(): Application[] {
   const data = localStorage.getItem(APPLICATIONS_KEY);
   return data ? JSON.parse(data) : [];
+}
+
+export function getGlobalVariables(): GlobalVariable[] {
+  const data = localStorage.getItem(GLOBAL_VARIABLES_KEY);
+  return data ? JSON.parse(data) : [];
+}
+
+export function saveGlobalVariables(variables: GlobalVariable[]): void {
+  localStorage.setItem(GLOBAL_VARIABLES_KEY, JSON.stringify(variables));
 }

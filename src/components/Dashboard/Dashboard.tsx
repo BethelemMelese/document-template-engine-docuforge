@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Template } from '../../types';
-import { getTemplates, deleteTemplate, saveTemplate } from '../../storage/localStorage';
+import { getTemplates, saveTemplate } from '../../storage/localStorage';
 import { Button } from '../common/Button';
 import { Sidebar } from '../common/Sidebar';
 import { extractVariables } from '../../utils/templateParser';
@@ -45,18 +45,6 @@ export function Dashboard() {
     }, 0);
   }, [templates]);
 
-  const handleDelete = (id: string, name: string) => {
-    if (window.confirm(`Are you sure you want to delete "${name}"? This action cannot be undone.`)) {
-      try {
-        deleteTemplate(id);
-        loadTemplates();
-      } catch (error) {
-        console.error('Error deleting template:', error);
-        alert('Failed to delete template. Please try again.');
-      }
-    }
-  };
-
   const handleDuplicate = (template: Template) => {
     try {
       const newTemplate: Template = {
@@ -71,7 +59,6 @@ export function Dashboard() {
       loadTemplates();
     } catch (error) {
       console.error('Error duplicating template:', error);
-      alert('Failed to duplicate template. Please try again.');
     }
   };
 
@@ -80,17 +67,17 @@ export function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen bg-background-light dark:bg-background-dark flex">
       {/* Sidebar */}
       <Sidebar />
 
       {/* Main Content */}
       <div className="flex-1 ml-64">
         {/* Top Header */}
-        <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
+        <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-10">
           <div className="px-8 py-4">
             <div className="flex items-center justify-between">
-              <div className="text-sm text-gray-500">
+              <div className="text-sm text-gray-500 dark:text-gray-400">
                 Dashboard / Templates
               </div>
               <div className="flex items-center gap-4">
@@ -100,7 +87,7 @@ export function Dashboard() {
                   </svg>
                   Create New Template
                 </Button>
-                <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg">
+                <button className="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg">
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                   </svg>
@@ -114,8 +101,8 @@ export function Dashboard() {
         <div className="p-8">
           {/* Title and Search */}
           <div className="mb-6">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">My Templates</h1>
-            <p className="text-gray-600 mb-4">Manage your dynamic cover letters and variables.</p>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">My Templates</h1>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">Manage your dynamic cover letters and variables.</p>
             <div className="relative max-w-md">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -136,7 +123,7 @@ export function Dashboard() {
             <div className="flex items-center justify-center py-12">
               <div className="text-center">
                 <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mb-4"></div>
-                <p className="text-gray-600">Loading templates...</p>
+                <p className="text-gray-600 dark:text-gray-400">Loading templates...</p>
               </div>
             </div>
           ) : filteredTemplates.length === 0 && templates.length === 0 ? (
@@ -157,10 +144,10 @@ export function Dashboard() {
                     />
                   </svg>
                 </div>
-                <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+                <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
                   Create your first cover letter template
                 </h2>
-                <p className="text-gray-600 mb-8">
+                <p className="text-gray-600 dark:text-gray-400 mb-8">
                   Get started by creating a reusable template with dynamic variables.
                 </p>
                 <Button size="lg" onClick={() => navigate('/editor')}>
@@ -182,7 +169,7 @@ export function Dashboard() {
                   return (
                     <div
                       key={template.id}
-                      className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow cursor-pointer"
+                      className="bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-800 p-6 hover:shadow-md transition-shadow cursor-pointer"
                       onClick={() => handleGenerate(template.id)}
                     >
                       <div className="flex items-start justify-between mb-4">
@@ -193,13 +180,13 @@ export function Dashboard() {
                           </span>
                         )}
                       </div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-3 line-clamp-2">
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3 line-clamp-2">
                         {template.name}
                       </h3>
-                      <p className="text-sm text-gray-500 mb-4">
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
                         Last edited {formatRelativeTime(template.updatedAt)}
                       </p>
-                      <div className="flex items-center justify-between text-sm text-gray-500">
+                      <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
                         <div className="flex items-center gap-1">
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
@@ -220,7 +207,7 @@ export function Dashboard() {
 
                 {/* Add Template Card */}
                 <div
-                  className="bg-white rounded-lg border-2 border-dashed border-gray-300 p-6 flex flex-col items-center justify-center hover:border-primary-400 hover:bg-primary-50 transition-colors cursor-pointer min-h-[200px]"
+                  className="bg-white dark:bg-gray-900 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700 p-6 flex flex-col items-center justify-center hover:border-primary hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors cursor-pointer min-h-[200px]"
                   onClick={() => navigate('/editor')}
                 >
                   <svg className="w-12 h-12 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -232,7 +219,7 @@ export function Dashboard() {
 
               {/* Manage Shared Variables Section */}
               {totalVariables > 0 && (
-                <div className="bg-primary-50 rounded-lg border border-primary-200 p-6 flex items-center justify-between">
+                <div className="bg-primary-50 dark:bg-primary-900/20 rounded-lg border border-primary-200 dark:border-primary-800 p-6 flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center">
                       <svg className="w-6 h-6 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
@@ -240,8 +227,8 @@ export function Dashboard() {
                       </svg>
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900">Manage Shared Variables</h3>
-                      <p className="text-sm text-gray-600">
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Manage Shared Variables</h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
                         You have {totalVariables} active variables across all your templates.
                       </p>
                     </div>
