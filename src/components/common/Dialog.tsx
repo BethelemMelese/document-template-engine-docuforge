@@ -1,6 +1,6 @@
 import React from 'react';
 
-type DialogSize = 'sm' | 'md';
+type DialogSize = 'sm' | 'md' | 'lg';
 
 interface DialogProps {
   open: boolean;
@@ -29,7 +29,7 @@ export function Dialog({
 }: DialogProps) {
   if (!open) return null;
 
-  const width = size === 'sm' ? 'max-w-sm' : 'max-w-md';
+  const width = size === 'sm' ? 'max-w-sm' : size === 'lg' ? 'max-w-4xl' : 'max-w-md';
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -45,8 +45,8 @@ export function Dialog({
             <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{description}</p>
           )}
         </div>
-        {children && <div className="p-5">{children}</div>}
-        <div className="p-5 pt-0 flex items-center justify-end gap-2">
+        {children && <div className="p-5 overflow-y-auto max-h-[70vh]">{children}</div>}
+        <div className="p-5 pt-0 flex items-center justify-end gap-2 border-t border-gray-200 dark:border-gray-800">
           <button
             className="px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800"
             onClick={onClose}

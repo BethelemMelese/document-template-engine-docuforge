@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { GeneratorForm } from '../components/Generator/GeneratorForm';
 import { LivePreview } from '../components/Generator/LivePreview';
 import { ExportButtons } from '../components/Generator/ExportButtons';
 import { AppLayout } from '../components/common/AppLayout';
-import { getTemplate, saveApplication } from '../storage/apiStorage';
+import { getTemplate, saveApplication, incrementTemplateViews } from '../storage/apiStorage';
 import { extractVariables, mergeTemplate } from '../utils/templateParser';
 import { Button } from '../components/common/Button';
 import { Template } from '../types';
@@ -12,6 +12,8 @@ import { Template } from '../types';
 export function GeneratorScreen() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
+  const location = useLocation();
+  const applicationFromHistory = (location.state as { application?: { company?: string; position?: string; date?: string; email?: string } })?.application;
   const [templateData, setTemplateData] = useState<Template | null>(null);
   const [template, setTemplate] = useState<string>('');
   const [variables, setVariables] = useState<string[]>([]);
@@ -24,12 +26,17 @@ export function GeneratorScreen() {
   useEffect(() => {
     if (id) {
       getTemplate(id)
-        .then((savedTemplate) => {
+        .then(async (savedTemplate) => {
           if (savedTemplate) {
             setTemplateData(savedTemplate);
             setTemplate(savedTemplate.content);
             const detectedVars = extractVariables(savedTemplate.content);
             setVariables(detectedVars);
+            try {
+              await incrementTemplateViews(id);
+            } catch {
+              // Non-blocking; view count is best-effort
+            }
           } else {
             setError('Template not found');
           }
@@ -114,6 +121,21 @@ export function GeneratorScreen() {
                 variables={variables}
                 variableDefinitions={templateData?.variableDefinitions}
                 onGenerate={handleGenerate}
+                initialValues={
+                  applicationFromHistory
+                    ? {
+                        company: applicationFromHistory.company ?? '',
+                        company_name: applicationFromHistory.company ?? '',
+                        position: applicationFromHistory.position ?? '',
+                        job_title: applicationFromHistory.position ?? '',
+                        role: applicationFromHistory.position ?? '',
+                        date: applicationFromHistory.date ?? '',
+                        application_date: applicationFromHistory.date ?? '',
+                        email: applicationFromHistory.email ?? '',
+                        hiring_manager_email: applicationFromHistory.email ?? '',
+                      }
+                    : undefined
+                }
               />
             </div>
           ) : (

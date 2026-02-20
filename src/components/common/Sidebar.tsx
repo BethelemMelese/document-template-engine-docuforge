@@ -3,9 +3,11 @@ import { useAuth } from '../../contexts/AuthContext';
 
 interface SidebarProps {
   currentPath?: string;
+  open?: boolean;
+  onClose?: () => void;
 }
 
-export function Sidebar({ currentPath }: SidebarProps) {
+export function Sidebar({ currentPath, open = true, onClose }: SidebarProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
@@ -58,8 +60,17 @@ export function Sidebar({ currentPath }: SidebarProps) {
     },
   ];
 
+  const handleNav = (path: string) => {
+    navigate(path);
+    onClose?.();
+  };
+
   return (
-    <div className="w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 h-screen fixed left-0 top-0 flex flex-col">
+    <div
+      className={`w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 h-screen fixed left-0 top-0 flex flex-col z-50 transform transition-transform duration-200 ease-in-out lg:translate-x-0 ${
+        open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+      }`}
+    >
       {/* Logo */}
       <div className="p-6 border-b border-gray-200 dark:border-gray-800">
         <div className="flex items-center gap-3">
@@ -83,7 +94,7 @@ export function Sidebar({ currentPath }: SidebarProps) {
             return (
               <li key={item.path}>
                 <button
-                  onClick={() => navigate(item.path)}
+                  onClick={() => handleNav(item.path)}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                     active
                       ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400'

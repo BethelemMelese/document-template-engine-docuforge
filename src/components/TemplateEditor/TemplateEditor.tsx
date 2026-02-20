@@ -140,11 +140,11 @@ export const TemplateEditor = forwardRef<TemplateEditorHandle, TemplateEditorPro
   return (
     <div className="flex flex-col h-full">
       {/* Toolbar */}
-      <div className="flex items-center gap-1 p-2 border-b border-gray-200 bg-white rounded-t-lg">
+      <div className="flex items-center gap-1 p-2 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-t-lg">
         <button
           onClick={() => editor.chain().focus().setParagraph().run()}
-          className={`px-2 py-1 rounded text-xs font-medium hover:bg-gray-100 ${
-            editor.isActive('paragraph') ? 'bg-primary-100 text-primary-700' : 'text-gray-700'
+          className={`px-2 py-1 rounded text-xs font-medium hover:bg-gray-100 dark:hover:bg-gray-800 ${
+            editor.isActive('paragraph') ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400' : 'text-gray-700 dark:text-gray-300'
           }`}
           title="Paragraph"
           type="button"
@@ -153,8 +153,8 @@ export const TemplateEditor = forwardRef<TemplateEditorHandle, TemplateEditorPro
         </button>
         <button
           onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-          className={`px-2 py-1 rounded text-xs font-medium hover:bg-gray-100 ${
-            editor.isActive('heading', { level: 1 }) ? 'bg-primary-100 text-primary-700' : 'text-gray-700'
+          className={`px-2 py-1 rounded text-xs font-medium hover:bg-gray-100 dark:hover:bg-gray-800 ${
+            editor.isActive('heading', { level: 1 }) ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400' : 'text-gray-700 dark:text-gray-300'
           }`}
           title="Heading 1"
           type="button"
@@ -163,19 +163,19 @@ export const TemplateEditor = forwardRef<TemplateEditorHandle, TemplateEditorPro
         </button>
         <button
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-          className={`px-2 py-1 rounded text-xs font-medium hover:bg-gray-100 ${
-            editor.isActive('heading', { level: 2 }) ? 'bg-primary-100 text-primary-700' : 'text-gray-700'
+          className={`px-2 py-1 rounded text-xs font-medium hover:bg-gray-100 dark:hover:bg-gray-800 ${
+            editor.isActive('heading', { level: 2 }) ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400' : 'text-gray-700 dark:text-gray-300'
           }`}
           title="Heading 2"
           type="button"
         >
           H2
         </button>
-        <div className="w-px h-6 bg-gray-300 mx-1" />
+        <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1" />
         <button
           onClick={() => editor.chain().focus().toggleBold().run()}
-          className={`p-2 rounded hover:bg-gray-100 ${
-            editor.isActive('bold') ? 'bg-primary-100 text-primary-700' : 'text-gray-700'
+          className={`p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800 ${
+            editor.isActive('bold') ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400' : 'text-gray-700 dark:text-gray-300'
           }`}
           title="Bold"
           type="button"
@@ -184,19 +184,19 @@ export const TemplateEditor = forwardRef<TemplateEditorHandle, TemplateEditorPro
         </button>
         <button
           onClick={() => editor.chain().focus().toggleItalic().run()}
-          className={`p-2 rounded hover:bg-gray-100 ${
-            editor.isActive('italic') ? 'bg-primary-100 text-primary-700' : 'text-gray-700'
+          className={`p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800 ${
+            editor.isActive('italic') ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400' : 'text-gray-700 dark:text-gray-300'
           }`}
           title="Italic"
           type="button"
         >
           <em className="text-sm">I</em>
         </button>
-        <div className="w-px h-6 bg-gray-300 mx-1" />
+        <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1" />
         <button
           onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className={`p-2 rounded hover:bg-gray-100 ${
-            editor.isActive('bulletList') ? 'bg-primary-100 text-primary-700' : 'text-gray-700'
+          className={`p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800 ${
+            editor.isActive('bulletList') ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400' : 'text-gray-700 dark:text-gray-300'
           }`}
           title="Bullet List"
           type="button"
@@ -207,8 +207,8 @@ export const TemplateEditor = forwardRef<TemplateEditorHandle, TemplateEditorPro
         </button>
         <button
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          className={`p-2 rounded hover:bg-gray-100 ${
-            editor.isActive('orderedList') ? 'bg-primary-100 text-primary-700' : 'text-gray-700'
+          className={`p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800 ${
+            editor.isActive('orderedList') ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400' : 'text-gray-700 dark:text-gray-300'
           }`}
           title="Numbered List"
           type="button"
@@ -217,11 +217,11 @@ export const TemplateEditor = forwardRef<TemplateEditorHandle, TemplateEditorPro
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
           </svg>
         </button>
-        <div className="w-px h-6 bg-gray-300 mx-1" />
+        <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1" />
         <button
           onClick={() => setInsertLinkOpen(true)}
-          className={`p-2 rounded hover:bg-gray-100 ${
-            editor.isActive('link') ? 'bg-primary-100 text-primary-700' : 'text-gray-700'
+          className={`p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800 ${
+            editor.isActive('link') ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400' : 'text-gray-700 dark:text-gray-300'
           }`}
           title="Link"
           type="button"
@@ -232,8 +232,8 @@ export const TemplateEditor = forwardRef<TemplateEditorHandle, TemplateEditorPro
         </button>
         <button
           onClick={() => editor.chain().focus().toggleCode().run()}
-          className={`p-2 rounded hover:bg-gray-100 ${
-            editor.isActive('code') ? 'bg-primary-100 text-primary-700' : 'text-gray-700'
+          className={`p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800 ${
+            editor.isActive('code') ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400' : 'text-gray-700 dark:text-gray-300'
           }`}
           title="Inline Code"
           type="button"
@@ -242,10 +242,10 @@ export const TemplateEditor = forwardRef<TemplateEditorHandle, TemplateEditorPro
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
           </svg>
         </button>
-        <div className="w-px h-6 bg-gray-300 mx-1" />
+        <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1" />
         <button
           onClick={() => editor.chain().focus().undo().run()}
-          className="p-2 rounded hover:bg-gray-100 text-gray-700"
+          className="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"
           title="Undo"
           type="button"
         >
@@ -255,7 +255,7 @@ export const TemplateEditor = forwardRef<TemplateEditorHandle, TemplateEditorPro
         </button>
         <button
           onClick={() => editor.chain().focus().redo().run()}
-          className="p-2 rounded hover:bg-gray-100 text-gray-700"
+          className="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"
           title="Redo"
           type="button"
         >
@@ -277,7 +277,7 @@ export const TemplateEditor = forwardRef<TemplateEditorHandle, TemplateEditorPro
       </div>
 
       {/* Editor */}
-      <div className="flex-1 overflow-auto bg-white">
+      <div className="flex-1 overflow-auto bg-white dark:bg-gray-900">
         <div className="p-6 min-h-full">
           <EditorContent editor={editor} />
         </div>
@@ -297,9 +297,28 @@ export const TemplateEditor = forwardRef<TemplateEditorHandle, TemplateEditorPro
           background-color: #e9d5ff;
           color: #6b21a8;
         }
+        .dark .variable-mark {
+          background-color: #1e3a8a;
+          color: #93c5fd;
+        }
+        .dark .variable-mark.purple {
+          background-color: #581c87;
+          color: #e9d5ff;
+        }
         .ProseMirror {
           outline: none;
           min-height: 500px;
+          color: #374151;
+        }
+        .dark .ProseMirror {
+          color: #e5e7eb;
+        }
+        .dark .ProseMirror p,
+        .dark .ProseMirror h1,
+        .dark .ProseMirror h2,
+        .dark .ProseMirror h3,
+        .dark .ProseMirror li {
+          color: inherit;
         }
         .ProseMirror p {
           margin: 0.75em 0;
@@ -311,6 +330,9 @@ export const TemplateEditor = forwardRef<TemplateEditorHandle, TemplateEditorPro
           color: #9ca3af;
           pointer-events: none;
           height: 0;
+        }
+        .dark .ProseMirror p.is-editor-empty:first-child::before {
+          color: #6b7280;
         }
         .ProseMirror strong {
           font-weight: 600;
@@ -329,12 +351,19 @@ export const TemplateEditor = forwardRef<TemplateEditorHandle, TemplateEditorPro
           color: #0284c7;
           text-decoration: underline;
         }
+        .dark .ProseMirror a {
+          color: #38bdf8;
+        }
         .ProseMirror code {
           background-color: #f3f4f6;
           padding: 2px 4px;
           border-radius: 3px;
           font-family: 'Courier New', monospace;
           font-size: 0.9em;
+        }
+        .dark .ProseMirror code {
+          background-color: #374151;
+          color: #e5e7eb;
         }
       `}</style>
 

@@ -5,17 +5,31 @@ interface TopBarProps {
   title?: React.ReactNode;
   /** Page-specific actions, e.g. buttons (placed before notification + theme) */
   actions?: React.ReactNode;
+  /** Called when menu button clicked (mobile) */
+  onMenuClick?: () => void;
   /** Optional content below the main row (e.g. banners, errors) */
   children?: React.ReactNode;
 }
 
-export function TopBar({ title, actions, children }: TopBarProps) {
+export function TopBar({ title, actions, onMenuClick, children }: TopBarProps) {
   return (
-    <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-10">
-      <div className="px-8 py-4">
+    <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-20">
+      <div className="px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex items-center justify-between flex-wrap gap-4">
-          <div className="text-sm text-gray-500 dark:text-gray-400">
-            {title}
+          <div className="flex items-center gap-3 min-w-0">
+            <button
+              type="button"
+              onClick={onMenuClick}
+              className="lg:hidden p-2 -ml-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+              aria-label="Open menu"
+            >
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+            <div className="text-sm text-gray-500 dark:text-gray-400 truncate">
+              {title}
+            </div>
           </div>
           <div className="flex items-center gap-4">
             {actions}

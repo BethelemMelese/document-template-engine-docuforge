@@ -1,14 +1,19 @@
 import { useNavigate } from 'react-router-dom';
 import { AppLayout } from '../components/common/AppLayout';
 import { Button } from '../components/common/Button';
+import { Dialog } from '../components/common/Dialog';
+import { LivePreview } from '../components/Generator/LivePreview';
+import { ExportButtons } from '../components/Generator/ExportButtons';
 import { useState, useEffect } from 'react';
 import { getApplications } from '../storage/apiStorage';
 import { formatDistanceToNow } from 'date-fns';
+import type { Application } from '../types';
 
 export function HistoryScreen() {
   const navigate = useNavigate();
-  const [applications, setApplications] = useState<Awaited<ReturnType<typeof getApplications>>>([]);
+  const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
+  const [viewingApp, setViewingApp] = useState<Application | null>(null);
 
   useEffect(() => {
     getApplications()
@@ -67,7 +72,14 @@ export function HistoryScreen() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => navigate(`/generate/${app.templateId}`, { state: { fromHistory: true } })}
+                        onClick={() => setViewingApp(app)}
+                      >
+                        View letter
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => navigate(`/generate/${app.templateId}`, { state: { fromHistory: true, application: app } })}
                       >
                         Use template again
                       </Button>
@@ -79,6 +91,25 @@ export function HistoryScreen() {
               ))}
             </div>
           )}
+
+          <Dialog
+            open={!!viewingApp}
+            title={viewingApp ? `Cover Letter · ${viewingApp.company} · ${viewingApp.position}` : ''}
+            size="lg"
+            cancelText="Close"
+            onClose={() => setViewingApp(null)}
+          >
+            {viewingApp && (
+              <div className="space-y-4">
+                <LivePreview content={viewingApp.mergedContent} />
+                <ExportButtons
+                  content={viewingApp.mergedContent}
+                  company={viewingApp.company}
+                  position={viewingApp.position}
+                />
+              </div>
+            )}
+          </Dialog>
       </div>
     </AppLayout>
   );
