@@ -24,6 +24,7 @@ export interface Variable {
 export interface Application {
   id: string;
   templateId: string;
+  templateName?: string; // Populated by API when listing
   company: string;
   position: string;
   date: string;

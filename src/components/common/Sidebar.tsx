@@ -1,6 +1,5 @@
-import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ThemeToggle } from './ThemeToggle';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface SidebarProps {
   currentPath?: string;
@@ -9,6 +8,7 @@ interface SidebarProps {
 export function Sidebar({ currentPath }: SidebarProps) {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
   const activePath = currentPath || location.pathname;
 
   const isActive = (path: string) => {
@@ -110,12 +110,11 @@ export function Sidebar({ currentPath }: SidebarProps) {
             </svg>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">Alex Rivera</p>
-            <p className="text-xs text-gray-500 dark:text-gray-400">Pro Plan</p>
+            <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+              {user?.name || user?.email || 'User'}
+            </p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user?.email}</p>
           </div>
-        </div>
-        <div className="flex justify-center">
-          <ThemeToggle />
         </div>
       </div>
     </div>

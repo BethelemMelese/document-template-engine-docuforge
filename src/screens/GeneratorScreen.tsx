@@ -3,8 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { GeneratorForm } from '../components/Generator/GeneratorForm';
 import { LivePreview } from '../components/Generator/LivePreview';
 import { ExportButtons } from '../components/Generator/ExportButtons';
-import { Sidebar } from '../components/common/Sidebar';
-import { getTemplate, saveApplication } from '../storage/localStorage';
+import { AppLayout } from '../components/common/AppLayout';
+import { getTemplate, saveApplication } from '../storage/apiStorage';
 import { extractVariables, mergeTemplate } from '../utils/templateParser';
 import { Button } from '../components/common/Button';
 import { Template } from '../types';
@@ -23,22 +23,22 @@ export function GeneratorScreen() {
 
   useEffect(() => {
     if (id) {
-      try {
-        const savedTemplate = getTemplate(id);
-        if (savedTemplate) {
-          setTemplateData(savedTemplate);
-          setTemplate(savedTemplate.content);
-          const detectedVars = extractVariables(savedTemplate.content);
-          setVariables(detectedVars);
-        } else {
-          setError('Template not found');
-        }
-      } catch (err) {
-        console.error('Error loading template:', err);
-        setError('Failed to load template');
-      } finally {
-        setLoading(false);
-      }
+      getTemplate(id)
+        .then((savedTemplate) => {
+          if (savedTemplate) {
+            setTemplateData(savedTemplate);
+            setTemplate(savedTemplate.content);
+            const detectedVars = extractVariables(savedTemplate.content);
+            setVariables(detectedVars);
+          } else {
+            setError('Template not found');
+          }
+        })
+        .catch((err) => {
+          console.error('Error loading template:', err);
+          setError('Failed to load template');
+        })
+        .finally(() => setLoading(false));
     } else {
       setError('No template ID provided');
       setLoading(false);
@@ -88,33 +88,20 @@ export function GeneratorScreen() {
   }
 
   return (
-    <div className="min-h-screen bg-background-light dark:bg-background-dark flex">
-      {/* Sidebar */}
-      <Sidebar />
-
-      {/* Main Content */}
-      <div className="flex-1 ml-64">
-        {/* Top Bar */}
-        <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-10">
-          <div className="px-8 py-4">
-            <div className="flex items-center justify-between flex-wrap gap-4">
-              <div className="text-sm text-gray-500 dark:text-gray-400">
-                Dashboard / Templates / Generate
-              </div>
-              <div className="flex gap-2">
-                <Button variant="outline" onClick={() => navigate(`/editor/${id}`)} size="sm">
-                  Edit Template
-                </Button>
-                <Button variant="outline" onClick={() => navigate('/')} size="sm">
-                  ← Dashboard
-                </Button>
-              </div>
-            </div>
-          </div>
+    <AppLayout
+      title="Dashboard / Templates / Generate"
+      actions={
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => navigate(`/editor/${id}`)} size="sm">
+            Edit Template
+          </Button>
+          <Button variant="outline" onClick={() => navigate('/')} size="sm">
+            ← Dashboard
+          </Button>
         </div>
-
-        {/* Main Content */}
-        <div className="p-8">
+      }
+    >
+      <div className="p-8">
           {!showPreview ? (
             <div className="max-w-2xl mx-auto">
               <div className="mb-6">
@@ -156,17 +143,15 @@ export function GeneratorScreen() {
                       variant="primary"
                       className="w-full"
                       size="lg"
-                      onClick={() => {
+                      onClick={async () => {
                         if (id) {
-                          saveApplication({
-                            id: crypto.randomUUID(),
+                          await saveApplication({
                             templateId: id,
                             company: formValues.company || '',
                             position: formValues.position || '',
                             date: formValues.date || new Date().toISOString().slice(0, 10),
                             email: formValues.email || undefined,
                             mergedContent,
-                            createdAt: new Date().toISOString(),
                           });
                         }
                         navigate(`/email/${id}`, { 
@@ -186,8 +171,7 @@ export function GeneratorScreen() {
               </div>
             </>
           )}
-        </div>
       </div>
-    </div>
+    </AppLayout>
   );
 }

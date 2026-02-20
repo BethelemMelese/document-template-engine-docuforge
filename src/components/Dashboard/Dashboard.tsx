@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Template } from '../../types';
-import { getTemplates, saveTemplate } from '../../storage/localStorage';
+import { getTemplates, createTemplate } from '../../storage/apiStorage';
 import { Button } from '../common/Button';
-import { Sidebar } from '../common/Sidebar';
+import { AppLayout } from '../common/AppLayout';
 import { extractVariables } from '../../utils/templateParser';
 import { getCategoryIcon, getCategoryTagColor, formatRelativeTime, formatViewCount } from '../../utils/templateUtils';
 
@@ -17,10 +17,10 @@ export function Dashboard() {
     loadTemplates();
   }, []);
 
-  const loadTemplates = () => {
+  const loadTemplates = async () => {
     setLoading(true);
     try {
-      const savedTemplates = getTemplates();
+      const savedTemplates = await getTemplates();
       setTemplates(savedTemplates);
     } catch (error) {
       console.error('Error loading templates:', error);
@@ -45,18 +45,17 @@ export function Dashboard() {
     }, 0);
   }, [templates]);
 
-  const handleDuplicate = (template: Template) => {
+  const handleDuplicate = async (template: Template) => {
     try {
-      const newTemplate: Template = {
-        ...template,
-        id: crypto.randomUUID(),
+      await createTemplate({
         name: `${template.name} (Copy)`,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        content: template.content,
+        category: template.category,
+        icon: template.icon,
         views: 0,
-      };
-      saveTemplate(newTemplate);
-      loadTemplates();
+        variableDefinitions: template.variableDefinitions,
+      });
+      await loadTemplates();
     } catch (error) {
       console.error('Error duplicating template:', error);
     }
@@ -67,38 +66,18 @@ export function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-background-light dark:bg-background-dark flex">
-      {/* Sidebar */}
-      <Sidebar />
-
-      {/* Main Content */}
-      <div className="flex-1 ml-64">
-        {/* Top Header */}
-        <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-10">
-          <div className="px-8 py-4">
-            <div className="flex items-center justify-between">
-              <div className="text-sm text-gray-500 dark:text-gray-400">
-                Dashboard / Templates
-              </div>
-              <div className="flex items-center gap-4">
-                <Button onClick={() => navigate('/editor')} size="sm">
-                  <svg className="w-4 h-4 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                  </svg>
-                  Create New Template
-                </Button>
-                <button className="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg">
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Main Content Area */}
-        <div className="p-8">
+    <AppLayout
+      title="Dashboard / Templates"
+      actions={
+        <Button onClick={() => navigate('/editor')} size="sm">
+          <svg className="w-4 h-4 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
+          Create New Template
+        </Button>
+      }
+    >
+      <div className="p-8">
           {/* Title and Search */}
           <div className="mb-6">
             <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">My Templates</h1>
@@ -240,8 +219,7 @@ export function Dashboard() {
               )}
             </>
           )}
-        </div>
       </div>
-    </div>
+    </AppLayout>
   );
 }

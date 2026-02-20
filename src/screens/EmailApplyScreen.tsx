@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { EmailApply } from '../components/EmailApply/EmailApply';
-import { Sidebar } from '../components/common/Sidebar';
+import { AppLayout } from '../components/common/AppLayout';
 import { Button } from '../components/common/Button';
 
 export function EmailApplyScreen() {
@@ -41,29 +41,20 @@ export function EmailApplyScreen() {
   }
 
   return (
-    <div className="min-h-screen bg-background-light dark:bg-background-dark flex">
-      <Sidebar />
-
-      <div className="flex-1 ml-64">
-        <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-10">
-          <div className="px-8 py-4">
-            <div className="flex items-center justify-between flex-wrap gap-4">
-              <div className="text-sm text-gray-500 dark:text-gray-400">
-                Dashboard / Templates / Email Application
-              </div>
-              <div className="flex gap-2">
-                <Button variant="outline" onClick={() => navigate(-1)} size="sm">
-                  ← Back
-                </Button>
-                <Button variant="outline" onClick={() => navigate('/')} size="sm">
-                  Dashboard
-                </Button>
-              </div>
-            </div>
-          </div>
+    <AppLayout
+      title="Dashboard / Templates / Email Application"
+      actions={
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => navigate(-1)} size="sm">
+            ← Back
+          </Button>
+          <Button variant="outline" onClick={() => navigate('/')} size="sm">
+            Dashboard
+          </Button>
         </div>
-
-        <div className="p-8">
+      }
+    >
+      <div className="p-8">
           <div className="mb-6">
             <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">Send Your Application</h2>
             <p className="text-gray-600 dark:text-gray-400">
@@ -77,8 +68,7 @@ export function EmailApplyScreen() {
             content={content}
             onEmailChange={setEmailValue}
           />
-        </div>
       </div>
-    </div>
+    </AppLayout>
   );
 }

@@ -1,9 +1,8 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sidebar } from '../components/common/Sidebar';
+import { AppLayout } from '../components/common/AppLayout';
 import { Button } from '../components/common/Button';
-import { getTemplates } from '../storage/localStorage';
-import { getGlobalVariables, saveGlobalVariables, type GlobalVariable } from '../storage/localStorage';
+import { getTemplates, getGlobalVariables, saveGlobalVariables, type GlobalVariable } from '../storage/apiStorage';
 import { extractVariables } from '../utils/templateParser';
 import type { VariableType } from '../types';
 import { Dialog } from '../components/common/Dialog';
@@ -16,59 +15,77 @@ const VARIABLE_TYPES: { value: VariableType; label: string }[] = [
 
 export function VariablesScreen() {
   const navigate = useNavigate();
-  const [globalVars, setGlobalVars] = useState<GlobalVariable[]>(() => getGlobalVariables());
+  const [globalVars, setGlobalVars] = useState<GlobalVariable[]>([]);
+  const [templates, setTemplates] = useState<Awaited<ReturnType<typeof getTemplates>>>([]);
+  const [loading, setLoading] = useState(true);
   const [addOpen, setAddOpen] = useState(false);
   const [newName, setNewName] = useState('');
   const [newType, setNewType] = useState<VariableType>('text');
 
-  const templates = getTemplates();
+  useEffect(() => {
+    Promise.all([getGlobalVariables(), getTemplates()])
+      .then(([vars, tmpls]) => {
+        setGlobalVars(vars);
+        setTemplates(tmpls);
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
+
   const variablesFromTemplates = useMemo(() => {
     const set = new Set<string>();
     templates.forEach((t) => extractVariables(t.content).forEach((v) => set.add(v)));
     return Array.from(set).sort();
   }, [templates]);
 
-  const handleAddGlobal = () => {
+  const handleAddGlobal = async () => {
     const name = newName.trim().replace(/\s+/g, '_');
     if (!name || globalVars.some((v) => v.name === name)) return;
     const next = [...globalVars, { name, type: newType }];
     setGlobalVars(next);
-    saveGlobalVariables(next);
-    setAddOpen(false);
-    setNewName('');
-    setNewType('text');
+    try {
+      await saveGlobalVariables(next);
+      setAddOpen(false);
+      setNewName('');
+      setNewType('text');
+    } catch (e) {
+      console.error(e);
+      setGlobalVars(globalVars);
+    }
   };
 
-  const handleRemoveGlobal = (name: string) => {
+  const handleRemoveGlobal = async (name: string) => {
     const next = globalVars.filter((v) => v.name !== name);
     setGlobalVars(next);
-    saveGlobalVariables(next);
+    try {
+      await saveGlobalVariables(next);
+    } catch (e) {
+      console.error(e);
+      setGlobalVars(globalVars);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-background-light dark:bg-background-dark flex">
-      <Sidebar />
-
-      <div className="flex-1 ml-64">
-        <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-10">
-          <div className="px-8 py-4">
-            <div className="flex items-center justify-between flex-wrap gap-4">
-              <div className="text-sm text-gray-500 dark:text-gray-400">
-                Dashboard / Variables
-              </div>
-              <div className="flex gap-2">
-                <Button size="sm" onClick={() => setAddOpen(true)}>
-                  + Add global variable
-                </Button>
-                <Button variant="outline" size="sm" onClick={() => navigate('/')}>
-                  Dashboard
-                </Button>
-              </div>
-            </div>
-          </div>
+    <AppLayout
+      title="Dashboard / Variables"
+      actions={
+        <div className="flex gap-2">
+          <Button size="sm" onClick={() => setAddOpen(true)}>
+            + Add global variable
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => navigate('/')}>
+            Dashboard
+          </Button>
         </div>
-
-        <div className="p-8">
+      }
+    >
+      <div className="p-8">
+          {loading ? (
+            <div className="flex justify-center py-12">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          ) : (
+          <>
           <div className="mb-6">
             <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">Edit Global Variables</h2>
             <p className="text-gray-600 dark:text-gray-400">
@@ -123,7 +140,8 @@ export function VariablesScreen() {
               )}
             </section>
           </div>
-        </div>
+          </>
+          )}
       </div>
 
       <Dialog
@@ -154,6 +172,6 @@ export function VariablesScreen() {
           ))}
         </select>
       </Dialog>
-    </div>
+    </AppLayout>
   );
 }
